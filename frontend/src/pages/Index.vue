@@ -1,0 +1,144 @@
+<template lang="html">
+    <q-page>
+     <div class="layout-padding row justify-center background-whitesmoke items-center">
+      <div class="col-xs-12 col-sm-7 col-lg-5">
+        <q-card class="q-card-background-white">
+          <q-form
+            @submit="onSubmit"
+            @reset="onReset"
+            class="bg-grey-1 q-gutter-auto"
+            autocomplete="off"
+          >
+            <div class="row">
+              <div class="col-sm-8 offset-xs-2 text-center">
+                <h5> Shorten your URL </h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-8 offset-xs-2">
+                <q-input
+                  v-model="originUrl"
+                  type="textarea"
+                  label="Please input your original URL:"
+                  :rules="[inputShortenerRule]"
+                  autocomplete="off"
+                  color="primary">
+                  <template v-if="originUrl" v-slot:append>
+                    <q-icon name="close" @click="onReset()" class="cursor-pointer" />
+                  </template>
+                </q-input>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-8 offset-xs-2">
+                <q-card>
+                  <q-card-section class="row items-center">
+                    <div class="col-sm-8 offset-xs-0 text-left">
+                      <q-avatar icon="link" color="primary" text-color="white" />
+                    </div>
+                    <div class="col-sm-8 offset-xs-2 text-right">
+                      <a v-if="confirm" :href="shortUrl" target="_blank"> {{ shortUrl }} </a>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-8 offset-xs-2">
+              </div>
+            </div>
+            <div class="row" style="padding-top: 20px;">
+              <div class="col-sm-8 offset-xs-2 text-right">
+                <q-btn
+                  color="primary"
+                  style="font-weight: bold;"
+                  type="submit">
+                  Shorten
+                </q-btn>
+                <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+              </div>
+            </div>
+            <br>
+            </q-form>
+        </q-card>
+      </div>
+      </div>
+  </q-page>
+</template>
+
+<script>
+import {
+  mapState, mapActions
+} from 'vuex'
+
+import {
+  GET_ERROR_DIALOG_MESSAGE
+} from 'src/const/utils/apiConst'
+
+export default {
+  name: 'Login',
+  data () {
+    return {
+      confirm: false,
+      lang: this.$i18n.locale,
+      originUrl: '',
+      shortUrl: ''
+    }
+  },
+  computed: {
+    ...mapState('top', [
+      'shortenUrl'
+    ])
+  },
+  created () {
+  },
+  watch: {
+    originUrl (newVal, oldVal) {
+      if (oldVal !== '' && newVal === '') {
+        this.shortUrl = ''
+      }
+    }
+  },
+  methods: {
+    ...mapActions('top', [
+      'GET_SHORTEN_URL',
+      'INPUT_RULE_NOT_BLANK'
+    ]),
+    async onSubmit () {
+      this.confirm = true
+      await this.GET_SHORTEN_URL({
+        originalUrl: this.originUrl
+      }).then(() => {
+        this.shortUrl = this.shortenUrl
+      }).catch((error) => {
+        const dialog = GET_ERROR_DIALOG_MESSAGE(error)
+        this.$q.dialog({
+          title: dialog.title,
+          message: dialog.message,
+          buttonLabels: dialog.buttonLabels
+        })
+      })
+    },
+    onReset () {
+      this.originUrl = ''
+      this.shortUrl = ''
+      this.confirm = false
+    },
+    async inputShortenerRule (val) {
+      return this.INPUT_RULE_NOT_BLANK({ val: val })
+    }
+  }
+}
+</script>
+
+<style lang="stylus" scoped>
+.q-card-background-white
+  background white
+
+.background-whitesmoke
+  background whitesmoke
+  height 80vh
+
+</style>

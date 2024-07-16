@@ -1,0 +1,9 @@
+{
+  "env": "",
+  "tokenTime": 14400,
+  "url": {
+    "backendShorten": "http://localhost:8080"
+  }
+}
+
+

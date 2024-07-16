@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tinyurl.demo.mapper.UrlMapper">
+
+    <!-- Retrieve the original URL based on the short URL -->
+    <select id="findOriginalUrlByShortUrl" resultType="String">
+        SELECT original_url FROM urls WHERE short_url = #{shortUrl}
+    </select>
+
+    <!-- Insert a new URL mapping -->
+    <insert id="insertUrl">
+        INSERT INTO urls (original_url, short_url)
+        VALUES (#{originalUrl}, #{shortUrl})
+    </insert>
+
+    <!-- Retrieve URL entry based on short URL -->
+    <select id="getUrlByShortUrl" resultType="com.tinyurl.demo.model.UrlTable">
+        SELECT * FROM urls WHERE short_url = #{shortUrl}
+    </select>
+
+    <!-- Get the click count for a short URL -->
+    <select id="getClickCountByShortUrl" parameterType="string" resultType="int">
+        SELECT click_count FROM urls WHERE short_url = #{shortUrl}
+    </select>
+
+    <!-- Increment the click count for a short URL -->
+    <update id="incrementClickCount" parameterType="string">
+        UPDATE urls SET click_count = click_count + 1 WHERE short_url = #{shortUrl}
+    </update>
+
+    <!-- Insert a pre-generated short URL into the database -->
+    <insert id="insertPreGeneratedUrl">
+        INSERT INTO pre_generated_urls (short_url) VALUES (#{shortUrl})
+    </insert>
+
+    <!-- Delete a specific short URL from the pre-generated URLs -->
+    <delete id="deleteShortUrl">
+        DELETE FROM pre_generated_urls
+        WHERE short_url = #{shortUrl}
+    </delete>
+
+    <!-- Retrieve the count of existing data in the pre_reload_urls table. -->
+    <select id="countPreReloadUrls" resultType="int">
+        SELECT COUNT(*) FROM pre_reload_urls
+    </select>
+
+    <!-- Retrieve a specified number of random short URL from the pre-generated table (used for preloading) -->
+    <select id="getRandomShortUrlsFromPreGenerated" resultType="string">
+        SELECT short_url
+        FROM pre_generated_urls
+        ORDER BY RANDOM()
+        LIMIT #{count}
+    </select>
+
+    <!-- Insert the pre-generated short URL into the pre_reload_urls table. -->
+    <insert id="preloadShortUrlToReload">
+        INSERT INTO pre_reload_urls (short_url) VALUES (#{shortUrl})
+    </insert>
+
+    <!-- Delete a specific pre-generated short URL from the pre_reload_urls table. -->
+    <delete id="deleteShortUrlFromReload">
+        DELETE FROM pre_reload_urls
+        WHERE short_url = #{shortUrl}
+    </delete>
+
+    <!-- Delete a list of short URLs from the pre-generated table. -->
+    <delete id="deleteShortUrlsFromPreGenerated">
+        DELETE FROM pre_generated_urls
+        WHERE short_url IN
+        <foreach item="shortUrl" collection="shortUrls" open="(" separator="," close=")">
+            #{shortUrl}
+        </foreach>
+    </delete>
+
+    <!-- Retrieve a random short URL from the pre-reload (used for getting short URL). -->
+    <select id="getRandomShortUrlFromReload" resultType="string">
+        SELECT short_url
+        FROM pre_reload_urls
+        ORDER BY RANDOM()
+        LIMIT 1
+    </select>
+
+    <!-- Check if a short URL exists in the database -->
+    <select id="existsShortUrl" resultType="boolean" parameterType="string">
+        SELECT COUNT(*) > 0
+        FROM urls
+        WHERE short_url = #{shortUrl}
+    </select>
+
+    <!-- Get URL entry older than 2 years -->
+    <select id="getOldUrls" resultType="com.tinyurl.demo.model.UrlTable">
+        SELECT * FROM urls WHERE datetime('now', '-2 years') > creation_date
+    </select>
+
+    <!-- Insert old URL to pre_generated_urls-->
+    <insert id="insertOldUrlToPreGenerated">
+        INSERT INTO pre_generated_urls (short_url) VALUES (#{shortUrl})
+    </insert>
+
+    <!-- Delete URLs older than 2 years -->
+    <delete id="deleteOldUrls">
+        DELETE FROM urls
+        WHERE datetime('now', '-2 years') > creation_date
+    </delete>
+</mapper>

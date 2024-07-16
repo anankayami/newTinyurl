@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- Setting 1: Mapping configuration for NULL values and JDBC types-->
+        <setting name="jdbcTypeForNull" value="NULL"/>
+        <!-- Setting 2: ：mapUnderscoreToCamelCase-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <!-- Setting ３：TypeAlias-->
+    <typeAliases>
+        <package name="com.tinyurl.demo.model"/>
+    </typeAliases>
+
+</configuration>
