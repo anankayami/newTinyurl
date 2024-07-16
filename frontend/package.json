@@ -1,11 +1,11 @@
 {
-  "name": "sss-manager",
+  "name": "tinyurl-manager",
   "version": "0.0.1",
   "description": "A Quasar Framework app",
   "productName": "Shortener URL",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
-  "author": "yokoyama",
+  "author": "YK",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue src",

@@ -41,15 +41,17 @@ CREATE TABLE urls (
 #### ** search data
 ```bash
   1. login database terminal
+      newTinyurl % cd backend/demo/db
       newTinyurl % sqlite3 database.tinyurl
       sqlite> 
-  2. confirm pre_generated_urls data count
+  2. create table
+  3. confirm pre_generated_urls data count
       sqlite> select count(*) from pre_generated_urls;
   
-  3. confirm pre_reload_urls data count
+  4. confirm pre_reload_urls data count
       sqlite> select count(*) from pre_reload_urls;
 
-  4. confirm urls data count
+  5. confirm urls data count
       sqlite> select count(*) from urls;
       sqlite> select * from urls;
 ```
@@ -68,4 +70,19 @@ CREATE TABLE urls (
 #### 1. view shortURL click count(${shortUrl} is parameter)
 ```bash
   curl -X GET "http://localhost:8080/api/url/${shortUrl}/clicks" 
+```
+
+### dockerfileの利用
+```bash
+
+cd backend/demo
+
+### create docker image
+docker build -t my-tinyurl-app .
+
+### run container
+docker run -d -p 8080:8080 --name my-tinyurl-app-container my-tinyurl-app
+
+### server
+curl http://localhost:8080
 ```
