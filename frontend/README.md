@@ -1,4 +1,4 @@
-# Quasar App (sss-manager)
+# tinyUrl
 
 A Quasar Framework app
 
