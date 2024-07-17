@@ -16,7 +16,7 @@ public class UrlService {
 
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int SHORT_URL_LENGTH = 6;
-    private static final int PREGENERATED_URL_COUNT = 40000;
+    private static final int PREGENERATED_URL_COUNT = 40000;        //The actual number to be prepared is 14,400,000,000
     private static final int PRELOAD_URL_COUNT = 10000; 
 
     @Autowired
