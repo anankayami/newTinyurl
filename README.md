@@ -47,7 +47,7 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
 ```
 #####    ・Install dependencies:
 ```
-      npm install --save moment
+      npm install
 ```
 #####    ・Start the Quasar development server:
 ```
