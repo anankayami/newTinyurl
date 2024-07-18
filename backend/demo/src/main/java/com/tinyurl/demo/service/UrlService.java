@@ -84,6 +84,7 @@ public class UrlService {
         urlMapper.deleteShortUrlFromReload(shortUrl);
         // save Redis cache
         redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(originalUrl, shortUrl, 2, TimeUnit.DAYS);
         String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         String returnUrl = baseUrl + "/api/url/" + shortUrl;
         return returnUrl;
@@ -98,6 +99,7 @@ public class UrlService {
             if (originalUrl != null) {
                 // Redisにキャッシュ
                 redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
+                redisTemplate.opsForValue().set(originalUrl, shortUrl, 2, TimeUnit.DAYS);
             }
         }
         if (originalUrl != null) {

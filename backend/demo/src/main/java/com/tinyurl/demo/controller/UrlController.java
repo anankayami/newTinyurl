@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UrlController {
     @Autowired
     private UrlService urlService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @RequestMapping("/")
     public String index() {
@@ -59,7 +63,14 @@ public class UrlController {
             
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        String shortUrl = urlService.shortenUrl(originalUrl);
+
+        String shortUrl = redisTemplate.opsForValue().get(originalUrl);
+        if (shortUrl == null) {
+            shortUrl = urlService.shortenUrl(originalUrl);
+        } else {
+            String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            shortUrl = baseUrl + "/api/url/" + shortUrl;
+        }
         
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
