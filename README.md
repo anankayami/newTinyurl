@@ -26,7 +26,7 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
       docker-compose down 
 ```
 
-####     3. or backend Build and Run local
+####     3. backend Build and Run local
 #####       Navigate to the backend directory:
 ```
       cd backend/demo
