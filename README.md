@@ -1,4 +1,4 @@
-## Shortener URL
+ ## Shortener URL
 This is a URL Shortener application built using Quasar for the frontend and Spring Boot for the backend. The application uses SQLite as the database.
 ###   Requisites
 ######      ・Java 
@@ -21,7 +21,7 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
 ```
       docker-compose up --build
 ```
-######stop container
+###### stop container
 ```
       docker-compose down 
 ```
