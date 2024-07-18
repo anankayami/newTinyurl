@@ -17,6 +17,7 @@ export default {
   en: 'English',
   title: 'Shortener URL',
   rules: {
-    notBlank: 'Required input.'
+    notBlank: 'Required input.',
+    UrlLength: 'The length of the input content is not within the range of 3000 characters.'
   }
 }

@@ -14,6 +14,7 @@ export default {
   en: 'English',
   title: 'Shortener URL',
   rules: {
-    notBlank: '必須入力項目。'
+    notBlank: '必須入力項目。',
+    UrlLength: '入力する内容の長さは3000の範囲以内ではありません。'
   }
 }

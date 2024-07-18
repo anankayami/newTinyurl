@@ -20,7 +20,7 @@
                   v-model="originUrl"
                   type="textarea"
                   label="Please input your original URL:"
-                  :rules="[inputShortenerRule]"
+                  :rules="[inputShortenerRule, inputUrlLengthRule]"
                   autocomplete="off"
                   color="primary">
                   <template v-if="originUrl" v-slot:append>
@@ -104,7 +104,8 @@ export default {
   methods: {
     ...mapActions('top', [
       'GET_SHORTEN_URL',
-      'INPUT_RULE_NOT_BLANK'
+      'INPUT_RULE_NOT_BLANK',
+      'INPUT_RULE_LENGTH'
     ]),
     async onSubmit () {
       this.confirm = true
@@ -128,6 +129,9 @@ export default {
     },
     async inputShortenerRule (val) {
       return this.INPUT_RULE_NOT_BLANK({ val: val })
+    },
+    async inputUrlLengthRule (val) {
+      return this.INPUT_RULE_LENGTH({ val: val })
     }
   }
 }

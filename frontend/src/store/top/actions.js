@@ -22,3 +22,12 @@ export async function INPUT_RULE_NOT_BLANK ({ commit }, payload) {
     }, 300)
   })
 }
+
+export async function INPUT_RULE_LENGTH ({ commit }, payload) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(!(payload.val.length > 3000) ||
+        i18n.t('rules.UrlLength'))
+    }, 300)
+  })
+}
