@@ -1,7 +1,16 @@
+### redis run
+```bash
+docker-compose up --build
+```
+
 ###  project build and run
 ``` bash
 1.  mvn clean install
 2.  mvn spring-boot:run
+
+or
+1. ./mvnw clean package
+2. java -jar target/demo-0.0.1-SNAPSHOT.jar
 ```
 
 ### ** database setting

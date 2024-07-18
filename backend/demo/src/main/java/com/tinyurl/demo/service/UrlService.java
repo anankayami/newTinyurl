@@ -3,6 +3,7 @@ package com.tinyurl.demo.service;
 import com.tinyurl.demo.mapper.UrlMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.tinyurl.demo.model.UrlTable;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UrlService {
@@ -21,6 +23,9 @@ public class UrlService {
 
     @Autowired
     private UrlMapper urlMapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     // Preload data into the pre_reload_urls table
     @Scheduled(cron = "0 0 0 * * ?")
@@ -77,7 +82,8 @@ public class UrlService {
         url.setClickCount(0);
         urlMapper.insertUrl(url);
         urlMapper.deleteShortUrlFromReload(shortUrl);
-;
+        // save Redis cache
+        redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
         String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         String returnUrl = baseUrl + "/api/url/" + shortUrl;
         return returnUrl;
@@ -85,11 +91,20 @@ public class UrlService {
 
     // Retrieve the original URL based on the short URL
     public String getOriginalUrl(String shortUrl) {
-        UrlTable urlTable = urlMapper.getUrlByShortUrl(shortUrl);
-        if (urlTable != null) {
+        // get data from Redis cache
+        String originalUrl = redisTemplate.opsForValue().get(shortUrl);
+        if (originalUrl == null) {
+            originalUrl = urlMapper.findOriginalUrlByShortUrl(shortUrl);
+            if (originalUrl != null) {
+                // Redisにキャッシュ
+                redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
+            }
+        }
+        if (originalUrl != null) {
             urlMapper.incrementClickCount(shortUrl);
         }
-        return urlMapper.findOriginalUrlByShortUrl(shortUrl);
+        
+        return originalUrl;
     }
 
     // Retrieve the click count for the short URL
