@@ -14,15 +14,16 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
     git clone https://github.com/anankayami/newTinyurl.git
   ```
 
-####    2.backend Build and Run with Docker
+####    2.redis build
 ```
       cd backend/demo
 ```
 ```
-      docker build -t my-tinyurl-app .
+      docker-compose up --build
 ```
+######stop container
 ```
-      docker run -d -p 8080:8080 --name my-tinyurl-app-container my-tinyurl-app 
+      docker-compose down 
 ```
 
 ####     3. or backend Build and Run local
