@@ -55,7 +55,7 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
   ```
 ####  The frontend should be available at http://localhost:8082.
 ####    5.Database
-###### The application uses SQLite as the database. The database file is located at backend/db/database.tinyurl
+###### The application uses SQLite as the database. The database file is located at backend/demo/db/database.tinyurl
 ------------------------------------------------------------
 
 
