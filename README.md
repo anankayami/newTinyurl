@@ -2,11 +2,14 @@
 This is a URL Shortener application built using Quasar for the frontend and Spring Boot for the backend. The application uses SQLite as the database.
 ###   Requisites
 ######      ・Java 
+######      ・JavaScript
 ######      ・Spring boot
+######      ・Mybatis
 ######      ・Maven
 ######      ・Quasar
 ######      ・Vue
 ######      ・SQLite
+######      ・Redis
 
 ### Getting start
 ####    1.clone project 
