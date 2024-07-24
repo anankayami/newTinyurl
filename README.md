@@ -17,9 +17,12 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
     git clone https://github.com/anankayami/newTinyurl.git
   ```
 
-####    2.redis build
+####    2.using dockerfile for backend Build and Run ,redis build
 ```
       cd backend/demo
+```
+```
+     mvn clean package
 ```
 ```
       docker-compose up --build
@@ -28,23 +31,9 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
 ```
       docker-compose down 
 ```
-
-####     3. backend Build and Run local
-#####       Navigate to the backend directory:
-```
-      cd backend/demo
-```
-#####    ・Build the Spring Boot application:
-```
-      ./mvnw clean package
-```
-#####    ・　Run the application:
-```
-      java -jar target/demo-0.0.1-SNAPSHOT.jar
-```
 #### The backend server should start at http://localhost:8080.
 
-####     4.start frontend 
+####     3.start frontend 
 #####       ・Navigate to the backend directory:
 ```
       $ cd frontend
@@ -58,22 +47,22 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
       npx quasar dev
   ```
 ####  The frontend should be available at http://localhost:8082.
-####    5.Database
+####    4.Database
 ###### The application uses SQLite as the database. The database file is located at backend/demo/db/database.tinyurl
-##### 5.1 login SQLite
+##### 4.1 login SQLite
 ```
      cd backend/demo/db
      sqlite3 database.tinyurl
 ```
-##### 5.2 eixt SQLite
+##### 4.2 eixt SQLite
 ```
     .exit
 ```
-##### 5.3 login Redis
+##### 4.3 login Redis
 ```
   redis-cli
 ```
-##### 5.4 get Redis data
+##### 4.4 get Redis data
 ```
   get <key>
 ```
