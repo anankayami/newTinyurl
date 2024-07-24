@@ -10,8 +10,6 @@
  * Boot files are your "main.js"
  **/
 
-import 'quasar/dist/quasar.ie.polyfills.js'
-
 
 
 import '@quasar/extras/roboto-font/roboto-font.css'

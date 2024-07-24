@@ -1,10 +1,22 @@
 version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: "default"
+    volumes:
+      - ./target:/target
+    depends_on:
+      - redis-server
   redis-server:
     image: "redis:latest"
     ports:
       - "6379:6379"
     volumes:
-      - ./redis.conf:/app/redis.conf
-    command: ["redis-server", "/app/redis.conf"]
+      - ./redis.conf:/redis.conf
+    command: ["redis-server", "/redis.conf"]

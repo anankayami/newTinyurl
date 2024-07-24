@@ -1,16 +1,13 @@
-### redis run
+### using dockerfile ( project build and run ,redis run )
 ```bash
+cd backend/demo
+
+mvn clean package
+
 docker-compose up --build
-```
 
-###  project build and run
-``` bash
-1.  mvn clean install
-2.  mvn spring-boot:run
-
-or
-1. ./mvnw clean package
-2. java -jar target/demo-0.0.1-SNAPSHOT.jar
+### server
+curl http://localhost:8080
 ```
 
 ### ** database setting
@@ -79,19 +76,4 @@ CREATE TABLE urls (
 #### 1. view shortURL click count(${shortUrl} is parameter)
 ```bash
   curl -X GET "http://localhost:8080/api/url/${shortUrl}/clicks" 
-```
-
-### dockerfileの利用
-```bash
-
-cd backend/demo
-
-### create docker image
-docker build -t my-tinyurl-app .
-
-### run container
-docker run -d -p 8080:8080 --name my-tinyurl-app-container my-tinyurl-app
-
-### server
-curl http://localhost:8080
 ```
