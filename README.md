@@ -77,7 +77,7 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
 ```
   get <key>
 ```
-###### eg. get <original URl>  or get <shortUrl>
+###### eg. get 「original URl」  or get 「shortUrl」
 
 ------------------------------------------------------------
 
