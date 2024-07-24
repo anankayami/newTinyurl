@@ -17,7 +17,7 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
     git clone https://github.com/anankayami/newTinyurl.git
   ```
 
-####    2.using dockerfile for backend Build and Run ,redis build
+####    2.start server
 ```
       cd backend/demo
 ```
