@@ -49,33 +49,33 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
 ####  The frontend should be available at http://localhost:8082.
 ####    4.Database
 ###### The application uses SQLite as the database. The database file is located at backend/demo/db/database.tinyurl
-##### 5.1 login container
+#####   4.1 login container
 ```
     docker ps
     docker exec -it demo_app_1 sh
 ```
-##### 4.1 login SQLite
+#####   4.2 login SQLite
 ```
      cd db
      sqlite3 database.tinyurl
 ```
-##### 4.2 eixt SQLite
+#####   4.3 eixt SQLite
 ```
     .exit
 ```
 
 #### 5. redis
-##### 5.1 login container
+#####   5.1 login container
 ```
     docker ps
     docker exec -it demo_redis-server_1 sh
 ```
-##### 5.2 login Redis
+#####   5.2 login Redis
 ```
   redis-cli
 
 ```
-##### 5.3 get Redis data
+#####   5.3 get Redis data
 ```
   get <key>
 ```
