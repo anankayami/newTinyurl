@@ -13,5 +13,8 @@ COPY db/database.tinyurl /db/database.tinyurl
 # ポート番号を公開します（Spring Bootのデフォルトポートは8080です）。
 EXPOSE 8080
 
+# Install SQLite3
+RUN apk update && apk add sqlite
+
 # アプリケーションを起動します。
 CMD ["java", "-jar", "demo.jar", "--spring.datasource.url=jdbc:sqlite:/db/database.tinyurl"]

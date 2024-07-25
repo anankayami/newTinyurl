@@ -11,6 +11,7 @@ services:
       SPRING_PROFILES_ACTIVE: "default"
     volumes:
       - ./target:/target
+      - ./db:/db
     depends_on:
       - redis-server
   redis-server:
