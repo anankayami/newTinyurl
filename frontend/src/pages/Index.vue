@@ -96,7 +96,7 @@ export default {
   },
   watch: {
     originUrl (newVal, oldVal) {
-      if (oldVal !== '' && newVal === '') {
+      if (oldVal !== '' && newVal.length !== oldVal.length && this.shortUrl !== '') {
         this.shortUrl = ''
       }
     }

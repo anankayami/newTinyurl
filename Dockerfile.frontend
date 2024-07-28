@@ -1,0 +1,19 @@
+# Use an official Node.js runtime as a parent image
+FROM node:18 AS frontend-builder
+
+WORKDIR /app
+
+COPY newfrontend/ ./
+
+RUN npm install -g @quasar/cli \
+    && npm install \
+    && quasar build
+
+# Use an official Nginx runtime as a parent image
+FROM nginx:alpine
+
+COPY --from=frontend-builder /app/dist/spa /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
