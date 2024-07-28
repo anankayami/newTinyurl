@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   frontend:
+    image: "tinyurl:frontend"
     build:
       context: .
       dockerfile: Dockerfile.frontend
@@ -12,6 +13,7 @@ services:
       - backend2
 
   backend1:
+    image: "tinyurl:backend1"
     build:
       context: .
       dockerfile: Dockerfile.backend
@@ -26,6 +28,7 @@ services:
       - redis-server
 
   backend2:
+    image: "tinyurl:backend2"
     build:
       context: .
       dockerfile: Dockerfile.backend
