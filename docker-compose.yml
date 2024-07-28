@@ -21,7 +21,7 @@ services:
       - "8080:8080"
     volumes:
       - ./target:/target
-      - ./db:/db
+      - sqlite-data:/app/db
     depends_on:
       - redis-server
 
@@ -35,7 +35,7 @@ services:
       - "8081:8081"
     volumes:
       - ./target:/target
-      - ./db:/db
+      - sqlite-data:/app/db
     depends_on:
       - redis-server
 
@@ -45,4 +45,9 @@ services:
       - "6379:6379"
     volumes:
       - ./redis.conf:/redis.conf
+      - redis-data:/data
     command: ["redis-server", "/redis.conf"]
+
+volumes:
+  sqlite-data:
+  redis-data:
