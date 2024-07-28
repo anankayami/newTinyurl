@@ -27,11 +27,11 @@ This is a URL Shortener application built using Quasar for the frontend and Spri
     docker ps -a
 ```
 eg.
-CONTAINER ID   IMAGE                 COMMAND                  CREATED              STATUS              PORTS                    NAMES
-1e7331c2e676   newtinyurl_frontend   "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8082->80/tcp     newtinyurl_frontend_1
-94fa1f2a6fb5   newtinyurl_backend1   "java -jar demo.jar …"   About a minute ago   Up About a minute   0.0.0.0:8080->8080/tcp   newtinyurl_backend1_1
-c1714147aaf0   newtinyurl_backend2   "java -jar demo.jar …"   About a minute ago   Up About a minute   0.0.0.0:8081->8081/tcp   newtinyurl_backend2_1
-5b2856ccf3b3   redis:alpine          "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:6379->6379/tcp   newtinyurl_redis-server_1
+NAMES
+newtinyurl_frontend_1
+newtinyurl_backend1_1
+newtinyurl_backend2_1
+newtinyurl_redis-server_1
 
 ###### stop container
 ```
