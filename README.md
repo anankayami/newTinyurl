@@ -111,8 +111,8 @@ curl -X POST "http://localhost:8080/api/url/preReload" -H "Content-Type: applica
       sqlite> select count(*) from urls;
       sqlite> select * from urls;
 ```
-### 4.7 confirm data
-#### 1. view shortURL click count(${shortUrl} is parameter)
+#### 4.7 confirm data
+##### 1. view shortURL click count(${shortUrl} is parameter)
 ```bash
 curl -X GET "http://localhost:8080/api/url/${shortUrl}/clicks"
 curl -X GET "http://localhost:8081/api/url/${shortUrl}/clicks" 
