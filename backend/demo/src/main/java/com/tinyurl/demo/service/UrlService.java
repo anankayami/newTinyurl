@@ -10,8 +10,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.tinyurl.demo.model.UrlTable;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 @Service
 public class UrlService {
@@ -27,17 +29,35 @@ public class UrlService {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Autowired
+    private RedisLockService redisLockService;
+
     // Preload data into the pre_reload_urls table
     @Scheduled(cron = "0 0 0 * * ?")
     public void preloadShortUrls() {
-        int existingCount = urlMapper.countPreReloadUrls();
-        int remainingCount = PRELOAD_URL_COUNT - existingCount;
-        if (remainingCount > 0) {
-            List<String> shortUrls = urlMapper.getRandomShortUrlsFromPreGenerated(remainingCount);
-            for (String shortUrl : shortUrls) {
-                urlMapper.preloadShortUrlToReload(shortUrl);
+        System.out.println("preloadShortUrls executed at: " + LocalDateTime.now());
+
+        String lockKey = "preloadShortUrlsLock";
+        String lockValue = UUID.randomUUID().toString();
+
+        boolean acquired = redisLockService.acquireLock(lockKey, lockValue, 600); // lock retain 600s
+
+        if (!acquired) {
+            // If the lock cannot be acquired, skip below the process.
+            return;
+        }
+        try {
+            int existingCount = urlMapper.countPreReloadUrls();
+            int remainingCount = PRELOAD_URL_COUNT - existingCount;
+            if (remainingCount > 0) {
+                List<String> shortUrls = urlMapper.getRandomShortUrlsFromPreGenerated(remainingCount);
+                for (String shortUrl : shortUrls) {
+                    urlMapper.preloadShortUrlToReload(shortUrl);
+                }
+                urlMapper.deleteShortUrlsFromPreGenerated(shortUrls); // Delete the extracted short URL
             }
-            urlMapper.deleteShortUrlsFromPreGenerated(shortUrls); // Delete the extracted short URL
+        } finally {
+            redisLockService.releaseLock(lockKey, lockValue);
         }
     }
 
@@ -66,28 +86,41 @@ public class UrlService {
 
     // Shorten the original URL and return the short URL
     public String shortenUrl(String originalUrl) {
-        // check pre_reload_urls count
-        int existingCount = urlMapper.countPreReloadUrls();
-        if (existingCount == 0) {
-            List<String> shortUrls = urlMapper.getRandomShortUrlsFromPreGenerated(PRELOAD_URL_COUNT);
-            for (String shortUrl : shortUrls) {
-                urlMapper.preloadShortUrlToReload(shortUrl);
-            }
-            urlMapper.deleteShortUrlsFromPreGenerated(shortUrls); // Delete the extracted short URL
+        String lockKey = "lock:shortenUrl:" + originalUrl;
+        String lockValue = UUID.randomUUID().toString();
+
+        boolean acquired = redisLockService.acquireLock(lockKey, lockValue, 60); // lock retain 60s
+
+        if (!acquired) {
+            // If the lock cannot be acquired, throw error
+            throw new IllegalStateException("Failed to acquire lock for shortening URL");
         }
-        String shortUrl = urlMapper.getRandomShortUrlFromReload();
-        UrlTable url = new UrlTable();
-        url.setOriginalUrl(originalUrl);
-        url.setShortUrl(shortUrl);
-        url.setClickCount(0);
-        urlMapper.insertUrl(url);
-        urlMapper.deleteShortUrlFromReload(shortUrl);
-        // save Redis cache
-        redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
-        redisTemplate.opsForValue().set(originalUrl, shortUrl, 2, TimeUnit.DAYS);
-        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        String returnUrl = baseUrl + "/api/url/" + shortUrl;
-        return returnUrl;
+        try {
+            // check pre_reload_urls count
+            int existingCount = urlMapper.countPreReloadUrls();
+            if (existingCount == 0) {
+                List<String> shortUrls = urlMapper.getRandomShortUrlsFromPreGenerated(PRELOAD_URL_COUNT);
+                for (String shortUrl : shortUrls) {
+                    urlMapper.preloadShortUrlToReload(shortUrl);
+                }
+                urlMapper.deleteShortUrlsFromPreGenerated(shortUrls); // Delete the extracted short URL
+            }
+            String shortUrl = urlMapper.getRandomShortUrlFromReload();
+            UrlTable url = new UrlTable();
+            url.setOriginalUrl(originalUrl);
+            url.setShortUrl(shortUrl);
+            url.setClickCount(0);
+            urlMapper.insertUrl(url);
+            urlMapper.deleteShortUrlFromReload(shortUrl);
+            // save Redis cache
+            redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
+            redisTemplate.opsForValue().set(originalUrl, shortUrl, 2, TimeUnit.DAYS);
+            String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            String returnUrl = baseUrl + "/api/url/" + shortUrl;
+            return returnUrl;
+        } finally {
+            redisLockService.releaseLock(lockKey, lockValue);
+        }
     }
 
     // Retrieve the original URL based on the short URL
@@ -117,13 +150,28 @@ public class UrlService {
     // Scheduled task to delete data older than 2 years every midnight
     @Scheduled(cron = "0 0 0 * * ?")
     public void scheduledDeleteOldUrls() {
-        List<UrlTable> getOldUrlsList = urlMapper.getOldUrls();
+        System.out.println("scheduledDeleteOldUrls executed at: " + LocalDateTime.now());
 
-        for (UrlTable url : getOldUrlsList) {
-            // Process each URL as needed
-            urlMapper.insertOldUrlToPreGenerated(url.getShortUrl());
+        String lockKey = "scheduledDeleteOldUrlsLock";
+        String lockValue = UUID.randomUUID().toString();
+
+        boolean acquired = redisLockService.acquireLock(lockKey, lockValue, 600); // lock retain 600s
+
+        if (!acquired) {
+            // If the lock cannot be acquired, skip below the process.
+            return;
         }
-        
-        urlMapper.deleteOldUrls();
+        try {
+            List<UrlTable> getOldUrlsList = urlMapper.getOldUrls();
+
+            for (UrlTable url : getOldUrlsList) {
+                // Process each URL as needed
+                urlMapper.insertOldUrlToPreGenerated(url.getShortUrl());
+            }
+            
+            urlMapper.deleteOldUrls();
+        } finally {
+            redisLockService.releaseLock(lockKey, lockValue);
+        }
     }
 }

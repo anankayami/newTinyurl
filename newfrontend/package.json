@@ -2,7 +2,7 @@
   "name": "tinyurl",
   "version": "0.0.1",
   "description": "tinyurl project",
-  "productName": "Quasar App",
+  "productName": "Tinyurl App",
   "author": "YoKoEna <yknana23@gmail.com>",
   "private": true,
   "scripts": {

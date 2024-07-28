@@ -156,8 +156,8 @@ module.exports = configure(function (ctx) {
 
 
       manifest: {
-        name: `Quasar App`,
-        short_name: `Quasar App`,
+        name: `Tinyurl App`,
+        short_name: `Tinyurl App`,
         description: `tinyurl project`,
         display: 'standalone',
         orientation: 'portrait',
