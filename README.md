@@ -94,7 +94,7 @@ curl -X POST "http://localhost:8080/api/url/preGenerate" -H "Content-Type: appli
 ```bash
 curl -X POST "http://localhost:8080/api/url/preReload" -H "Content-Type: application/json"
 ```
-####   4.6  search data
+####  4.6  search data
 ```bash
   1. login database terminal
       sqlite>
@@ -112,17 +112,17 @@ curl -X POST "http://localhost:8080/api/url/preReload" -H "Content-Type: applica
       sqlite> select * from urls;
 ```
 #### 4.7 confirm data
-##### 1. view shortURL click count(${shortUrl} is parameter)
+#####  view shortURL click count(${shortUrl} is parameter)
 ```bash
 curl -X GET "http://localhost:8080/api/url/${shortUrl}/clicks"
 curl -X GET "http://localhost:8081/api/url/${shortUrl}/clicks" 
 ```
 
-#####   4.3 eixt SQLite
+#####   4.8 eixt SQLite
 ```
 .exit
 ```
-#####   4.4 logout container
+#####   4.9 logout container
 ```
 exit
 ```
