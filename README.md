@@ -87,12 +87,12 @@ CREATE TABLE urls (
 
 #### 4.4  create data of table pre_generated_urls (just one time)
 ``` bash
-curl -X POST "http://localhost:8080/api/url/preGenerate" -H "Content-Type: application/json"
+curl -X POST "http://localhost:8080/api/preGenerate" -H "Content-Type: application/json"
 ```
 
 #### 4.5 import data into pre_reload_urls from pre_generated_urls
 ```bash
-curl -X POST "http://localhost:8080/api/url/preReload" -H "Content-Type: application/json"
+curl -X POST "http://localhost:8080/api/preReload" -H "Content-Type: application/json"
 ```
 ####  4.6  search data
 ```bash
@@ -114,8 +114,8 @@ curl -X POST "http://localhost:8080/api/url/preReload" -H "Content-Type: applica
 #### 4.7 confirm data
 #####  view shortURL click count(${shortUrl} is parameter)
 ```bash
-curl -X GET "http://localhost:8080/api/url/${shortUrl}/clicks"
-curl -X GET "http://localhost:8081/api/url/${shortUrl}/clicks" 
+curl -X GET "http://localhost:8080/api/${shortUrl}/clicks"
+curl -X GET "http://localhost:8081/api/${shortUrl}/clicks" 
 ```
 
 #####   4.8 eixt SQLite

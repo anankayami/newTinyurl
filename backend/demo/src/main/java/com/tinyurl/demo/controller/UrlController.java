@@ -20,7 +20,7 @@ import com.tinyurl.demo.service.UrlService;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/api/url")
+@RequestMapping("/api")
 public class UrlController {
     @Autowired
     private UrlService urlService;
@@ -69,7 +69,7 @@ public class UrlController {
             shortUrl = urlService.shortenUrl(originalUrl);
         } else {
             String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-            shortUrl = baseUrl + "/api/url/" + shortUrl;
+            shortUrl = baseUrl + "/api/" + shortUrl;
         }
         
         Map<String, Object> response = new HashMap<>();

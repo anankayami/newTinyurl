@@ -64,16 +64,16 @@ CREATE TABLE urls (
 
 #### 1.  create data of table pre_generated_urls (just one time)
 ``` bash
-  curl -X POST "http://localhost:8080/api/url/preGenerate" -H "Content-Type: application/json"
+  curl -X POST "http://localhost:8080/api/preGenerate" -H "Content-Type: application/json"
 ```
 
 #### 2. import data into pre_reload_urls from pre_generated_urls
 ```bash
-  curl -X POST "http://localhost:8080/api/url/preReload" -H "Content-Type: application/json"
+  curl -X POST "http://localhost:8080/api/preReload" -H "Content-Type: application/json"
 ```
 
 ### ** confirm data
 #### 1. view shortURL click count(${shortUrl} is parameter)
 ```bash
-  curl -X GET "http://localhost:8080/api/url/${shortUrl}/clicks" 
+  curl -X GET "http://localhost:8080/api/${shortUrl}/clicks" 
 ```

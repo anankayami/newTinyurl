@@ -1,60 +1,54 @@
-import axios from 'axios'
+import { axiosInstance } from 'boot/axios';
 
-import { getBackendUrl } from 'boot/axios';
-
-const withCredentials = true
-
-const timeout = 300 * 1000
+const timeout = 300 * 1000;
 
 /* ------ request ------ */
-const request = (payload) => {
-  const backendUrl = getBackendUrl()
+const request = async (payload) => {
   const config = {
-    url: `${backendUrl}${payload.url}`,
+    url: `${payload.url}`,
     method: payload.method,
-    xhrFields: {
-      withCredentials: withCredentials
-    },
-    json: true,
     timeout,
-    headers:
-      {
-        'Content-Type': 'application/json'
-      }
-  }
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    withCredentials: true,
+  };
 
   if (payload.method === 'GET') {
-    config.params = payload.params
+    config.params = payload.params;
   } else if (payload.method === 'POST') {
-    config.data = payload.data
+    config.data = payload.data;
   }
-  return axios(config)
+
+  return axiosInstance(config)
     .then((result) => {
       if (result && result.data && result.data.status === 'error') {
-        throw result
+        throw result;
       }
-      return result
+      return result;
     }).catch((error) => {
-      throw error
-    })
+      throw error;
+    });
 }
 
 // shorten original url -> get short url
 export const API_GET_SHORT_URL = async (payload) => {
-  const url = `/shorten`;
-  const method = 'POST'
+  const url = '/shorten'; // Endpoint URL
+  const method = 'POST';
 
   const postData = {
     originalUrl: payload.originalUrl
-  }
-  const data = JSON.stringify(postData)
+  };
+
+  const data = JSON.stringify(postData);
+
   return request({
     url,
     method,
     data
   }).then((result) => {
-    return result
+    return result;
   }).catch((error) => {
-    throw error
-  })
+    throw error;
+  });
 }

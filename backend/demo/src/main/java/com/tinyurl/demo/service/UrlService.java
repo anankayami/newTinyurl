@@ -116,7 +116,7 @@ public class UrlService {
             redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
             redisTemplate.opsForValue().set(originalUrl, shortUrl, 2, TimeUnit.DAYS);
             String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-            String returnUrl = baseUrl + "/api/url/" + shortUrl;
+            String returnUrl = baseUrl + "/api/" + shortUrl;
             return returnUrl;
         } finally {
             redisLockService.releaseLock(lockKey, lockValue);

@@ -1,5 +1,4 @@
 import { useI18n } from 'vue-i18n'
-import setting from 'app/default.json'
 import { i18n } from 'boot/i18n.js'
 
 export const GET_ERROR_DIALOG_MESSAGE = (error) => {
