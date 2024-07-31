@@ -23,8 +23,7 @@ services:
       - "8080:8080"
     volumes:
       - ./backend/demo/target:/app/target
-      - ./backend/demo/db:/app/db
-      - sqlite-data:/data
+      - sqlite-data:/app/db
     depends_on:
       - redis-server
 
@@ -39,8 +38,7 @@ services:
       - "8081:8081"
     volumes:
       - ./backend/demo/target:/app/target
-      - ./backend/demo/db:/app/db
-      - sqlite-data:/data
+      - sqlite-data:/app/db
     depends_on:
       - redis-server
 
