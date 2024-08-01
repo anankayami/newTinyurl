@@ -50,11 +50,6 @@
   - pre-generated URLs
 - Unpredictablity
   - pre-generated URLs
-- Deployment
-  - Setting Dockerfile and Docker-compose file
-    - containers
-    - images
-    - add volumes to persist the data
 
 ## Database SQLite
 - Table: pre_generated_urls
@@ -63,7 +58,13 @@
   
 ## Cache - Redis
 - key: shortened URL , value: original long URL
-- key: original long URl , value: shortened URL
+- key: original long URL , value: shortened URL
+
+## Deployment
+- Setting Dockerfile and Docker-compose file
+  - containers
+  - images
+  - add volumes to persist the data
 
 ## Version manager
 - Git
