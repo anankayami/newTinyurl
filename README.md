@@ -33,6 +33,7 @@ newtinyurl_frontend_1
 newtinyurl_backend1_1
 newtinyurl_backend2_1
 newtinyurl_redis-server_1
+newtinyurl_nginx_1
 ```
 
 ###### stop container
