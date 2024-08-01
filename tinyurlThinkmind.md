@@ -12,11 +12,12 @@
   - Lombok
   - Maven
   - Redis
+  - Nginx
 - Deployment
   - Docker
   - commandline
 
-## Function
+## Functional
 - Estimate
   - 1. Storage capacity: 12 billion short URLs, approximately 12 TB of storage space
   - 2. Throughput : an average of 20,000 QPS ,peak times reaching 40,000 QPS
@@ -42,7 +43,7 @@
   - preload data into the pre_reload_urls table every midnight
   - delete data older than 2 years every midnight
 
-## No Function
+## Non Functional
 - Scalability and Efficiency
   - Nginx Load Balancer
   - more than one backend service
