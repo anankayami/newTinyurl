@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.tinyurl.demo.model.UrlTable;
@@ -57,8 +56,6 @@ public class UrlService {
                 }
                 urlMapper.deleteShortUrlsFromPreGenerated(shortUrls); // Delete the extracted short URL
             }
-        } catch (Exception e) {
-            throw new UrlServiceException("Failed to preload short URLs", e);
         } finally {
             redisLockService.releaseLock(lockKey, lockValue);
         }
@@ -67,13 +64,9 @@ public class UrlService {
     // Pre-generate short URLs and store them in the database
     public void preGenerateShortUrls() {
         SecureRandom random = new SecureRandom();
-        try {
-            for (int i = 0; i < PREGENERATED_URL_COUNT; i++) {
-                String shortUrl = generateRandomShortUrl(random);
-                urlMapper.insertPreGeneratedUrl(shortUrl);
-            }
-        } catch (Exception e) {
-            throw new UrlServiceException("Failed to pre-generate short URLs", e);
+        for (int i = 0; i < PREGENERATED_URL_COUNT; i++) {
+            String shortUrl = generateRandomShortUrl(random);
+            urlMapper.insertPreGeneratedUrl(shortUrl);
         }
     }
 
@@ -81,22 +74,17 @@ public class UrlService {
     private String generateRandomShortUrl(SecureRandom random) {
         StringBuilder sb = new StringBuilder(SHORT_URL_LENGTH);
         String shortUrl;
-        try {
-            do {
-                sb.setLength(0);    // reset StringBuilder
-                for (int i = 0; i < SHORT_URL_LENGTH; i++) {
-                    sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
-                }
-                shortUrl = sb.toString();
-            } while (urlMapper.existsShortUrl(shortUrl));   // Check for uniqueness
-        } catch (Exception e) {
-            throw new UrlServiceException("Error generating random short URL", e);
-        }
+        do {
+            sb.setLength(0);    // reset StringBuilder
+            for (int i = 0; i < SHORT_URL_LENGTH; i++) {
+                sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+            }
+            shortUrl = sb.toString();
+        } while (urlMapper.existsShortUrl(shortUrl));   // Check for uniqueness
         return shortUrl;
     }
 
     // Shorten the original URL and return the short URL
-    @Transactional
     public String shortenUrl(String originalUrl) {
         String lockKey = "lock:shortenUrl:" + originalUrl;
         String lockValue = UUID.randomUUID().toString();
@@ -130,8 +118,6 @@ public class UrlService {
             String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
             String returnUrl = baseUrl + "/api/" + shortUrl;
             return returnUrl;
-        } catch (Exception e) {
-            throw new UrlServiceException("Failed to shorten URL", e);
         } finally {
             redisLockService.releaseLock(lockKey, lockValue);
         }
@@ -139,33 +125,26 @@ public class UrlService {
 
     // Retrieve the original URL based on the short URL
     public String getOriginalUrl(String shortUrl) {
-        try {
-            // get data from Redis cache
-            String originalUrl = redisTemplate.opsForValue().get(shortUrl);
-            if (originalUrl == null) {
-                originalUrl = urlMapper.findOriginalUrlByShortUrl(shortUrl);
-                if (originalUrl != null) {
-                    // save Redis cache
-                    redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
-                    redisTemplate.opsForValue().set(originalUrl, shortUrl, 2, TimeUnit.DAYS);
-                }
-            }
+        // get data from Redis cache
+        String originalUrl = redisTemplate.opsForValue().get(shortUrl);
+        if (originalUrl == null) {
+            originalUrl = urlMapper.findOriginalUrlByShortUrl(shortUrl);
             if (originalUrl != null) {
-                urlMapper.incrementClickCount(shortUrl);
+                // Redisにキャッシュ
+                redisTemplate.opsForValue().set(shortUrl, originalUrl, 2, TimeUnit.DAYS);
+                redisTemplate.opsForValue().set(originalUrl, shortUrl, 2, TimeUnit.DAYS);
             }
-            return originalUrl;
-        } catch (Exception e) {
-            throw new UrlServiceException("Failed to retrieve original URL", e);
         }
+        if (originalUrl != null) {
+            urlMapper.incrementClickCount(shortUrl);
+        }
+        
+        return originalUrl;
     }
 
     // Retrieve the click count for the short URL
     public int getClickCount(String shortUrl) {
-        try {
-            return urlMapper.getClickCountByShortUrl(shortUrl);
-        } catch (Exception e) {
-            throw new UrlServiceException("Failed to get click count for URL", e);
-        }
+        return urlMapper.getClickCountByShortUrl(shortUrl);
     }
 
     // Scheduled task to delete data older than 2 years every midnight
@@ -191,20 +170,8 @@ public class UrlService {
             }
             
             urlMapper.deleteOldUrls();
-        } catch (Exception e) {
-            throw new UrlServiceException("Failed to delete old URLs", e);
         } finally {
             redisLockService.releaseLock(lockKey, lockValue);
-        }
-    }
-    // Custom exception for UrlService errors
-    public static class UrlServiceException extends RuntimeException {
-        public UrlServiceException(String message) {
-            super(message);
-        }
-
-        public UrlServiceException(String message, Throwable cause) {
-            super(message, cause);
         }
     }
 }
