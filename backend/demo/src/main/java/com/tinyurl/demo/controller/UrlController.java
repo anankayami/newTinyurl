@@ -57,7 +57,7 @@ public class UrlController {
     public ResponseEntity<Map<String, Object>> shortenUrl(@RequestBody Map<String, String> request) {
         String originalUrl = request.get("originalUrl");
         if (!isValidUrl(originalUrl)) {
-            return buildErrorResponse("Invalid URL format", "The provided URL format is not valid.", HttpStatus.BAD_REQUEST);
+            return buildErrorResponse("Invalid URL format", "The provided URL format is not valid.", HttpStatus.OK);
         }
 
         String shortUrl = redisTemplate.opsForValue().get(originalUrl);
